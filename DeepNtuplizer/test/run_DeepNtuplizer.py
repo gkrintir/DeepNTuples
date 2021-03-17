@@ -12,7 +12,7 @@ options.register('maxEvents',-1,VarParsing.VarParsing.multiplicity.singleton,Var
 options.register('skipEvents', 0, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "skip N events")
 options.register('job', 0, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "job number")
 options.register('nJobs', 1, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "total jobs")
-options.register('release','8_0_1', VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"release number (w/o CMSSW)")
+options.register('release','9_4_10', VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"release number (w/o CMSSW)")
 
 print("Using release "+options.release)
 
@@ -32,7 +32,7 @@ process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '94X_mc2017_realistic_forppRef5TeV', '')
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
@@ -42,7 +42,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.options = cms.untracked.PSet(
    allowUnscheduled = cms.untracked.bool(True),  
-   wantSummary=cms.untracked.bool(False)
+   wantSummary=cms.untracked.bool(False),
+   SkipEvent = cms.untracked.vstring('ProductNotFound')
 )
 
 from PhysicsTools.PatAlgos.patInputFiles_cff import filesRelValTTbarPileUpMINIAODSIM
@@ -63,7 +64,7 @@ process.source.fileNames = process.source.fileNames[jobNumber:numberOfFiles:numb
 if options.nJobs > 1:
     print ("running over these files:")
     print (process.source.fileNames)
-#process.source.fileNames = ['file:/uscms/home/verzetti/nobackup/CMSSW_8_0_25/src/DeepNTuples/copy_numEvent100.root']
+process.source.fileNames = ['file:test_deep_flavour_MINIAODSIM.root']
 
 process.source.skipEvents = cms.untracked.uint32(options.skipEvents)
 process.maxEvents  = cms.untracked.PSet( 
@@ -97,6 +98,19 @@ if int(options.release.replace("_",""))>=840 :
          'pfDeepCSVJetTags:probc',
          'pfDeepCSVJetTags:probbb',
          'pfDeepCSVJetTags:probcc',
+     # DeepFlavour                                                                                                                                                                                         
+     'pfDeepFlavourJetTags:probb'
+  , 'pfDeepFlavourJetTags:probbb'
+  , 'pfDeepFlavourJetTags:problepb'
+  , 'pfDeepFlavourJetTags:probc'
+  , 'pfDeepFlavourJetTags:probuds'
+  , 'pfDeepFlavourJetTags:probg'
+  , 'pfNegativeDeepFlavourJetTags:probb'
+  , 'pfNegativeDeepFlavourJetTags:probbb'
+  , 'pfNegativeDeepFlavourJetTags:problepb'
+  , 'pfNegativeDeepFlavourJetTags:probc'
+  , 'pfNegativeDeepFlavourJetTags:probuds'
+  , 'pfNegativeDeepFlavourJetTags:probg'
  ]
 else :
   bTagDiscriminators = [

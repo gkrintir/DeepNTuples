@@ -389,6 +389,7 @@ bool ntuple_JetInfo::fillBranches(const pat::Jet & jet, const size_t& jetidx, co
 
     genDecay_ = -1.;
 
+    try {
     reco::GenParticleRefVector Bhadrons_in_jet = jet.jetFlavourInfo().getbHadrons();
 
     if (Bhadrons_in_jet.size() > 0){ 
@@ -422,7 +423,10 @@ bool ntuple_JetInfo::fillBranches(const pat::Jet & jet, const size_t& jetidx, co
             }
         }
     }
-
+    }
+    catch (const cms::Exception &e){
+      genDecay_ = -1.;
+    }
 
 
     //https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2016
