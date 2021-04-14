@@ -28,12 +28,14 @@ JetFlavor jet_flavour(const pat::Jet& jet,
         const std::vector<reco::GenParticle>& neutrinosLepB_C,
         const std::vector<reco::GenParticle>& alltaus,
         bool usePhysForLightAndUndefined) { 
+     //std::cout<<"edo!!"<<std::endl;
     int hflav = abs(jet.hadronFlavour());
     int pflav = abs(jet.partonFlavour());
     int physflav = 0;
-    if(jet.genParton()) physflav=abs(jet.genParton()->pdgId());
+    //if(jet.genParton()) physflav=abs(jet.genParton()->pdgId());
     std::size_t nbs = jet.jetFlavourInfo().getbHadrons().size();
     std::size_t ncs = jet.jetFlavourInfo().getcHadrons().size();
+    //std::cout<<"edo!!!"<<std::endl;
 
     unsigned int nbFromGSP(0);
     for (reco::GenParticle p : gToBB) {
@@ -47,11 +49,12 @@ JetFlavor jet_flavour(const pat::Jet& jet,
         if (dr < 0.4) ++ncFromGSP;
     }
 
-    //std::cout << " jet pt = " << jet.pt() << " hfl = " << hflav << " pfl = " << pflav << " genpart = " << physflav
-            //  << " nbFromGSP = " << nbFromGSP << " ncFromGSP = " << ncFromGSP
-    //  << " nBhadrons " << nbs << " nCHadrons " << ncs << std::endl;
+    //        std::cout << " jet pt = " << jet.pt() << " hfl = " << hflav << " pfl = " << pflav << " genpart = " << physflav
+    // << " nbFromGSP = " << nbFromGSP << " ncFromGSP = " << ncFromGSP
+    //<< " nBhadrons " << nbs << " nCHadrons " << ncs << std::endl;
 
-    if(hflav == 5) { //B jet
+    if(pflav == 5) { //B jet
+      return JetFlavor::B; //HI modification
         if(nbs > 1) {
             if (nbFromGSP > 0) return JetFlavor::GBB;
             else return JetFlavor::BB;
@@ -67,7 +70,7 @@ JetFlavor jet_flavour(const pat::Jet& jet,
                     return JetFlavor::LeptonicB_C;
                 }
             }
-            return JetFlavor::B;
+            //return JetFlavor::B;
         }
         else {
             if(usePhysForLightAndUndefined){
@@ -79,7 +82,7 @@ JetFlavor jet_flavour(const pat::Jet& jet,
             else return JetFlavor::UNDEFINED;
         }
     }
-    else if(hflav == 4) { //C jet
+    else if(pflav == 4) { //C jet
         if (ncs > 1) {
             if (ncFromGSP > 0) return JetFlavor::GCC;
             else return JetFlavor::CC;
@@ -88,6 +91,7 @@ JetFlavor jet_flavour(const pat::Jet& jet,
     }
     else { //not a heavy jet
         if(alltaus.size()>0){ //check for tau in a simplistic way
+	  std::cout<<"edo!"<<std::endl;
             bool ishadrtaucontained=true;
             for(const auto& p:alltaus){
                 size_t ndau=p.numberOfDaughters();
@@ -151,12 +155,14 @@ std::tuple<int, int, int, float, float, float, float> calcVariables(const reco::
 
     //Loop over the jet constituents
     for (unsigned int i = 0; i <  jet->numberOfDaughters(); i++){
+      //std::cout<<"bef"<<std::endl;
         const pat::PackedCandidate* daughter = dynamic_cast<const pat::PackedCandidate*>(jet->daughter(i));
+	//std::cout<<"meta"<<std::endl;
         if(daughter){                                        //packed candidate situation
             auto part = static_cast<const pat::PackedCandidate*>(daughter);
 
-            //      std::cout << "daughter pdg Id = " << daughter->pdgId() << std::endl;
-            //      std::cout << "daughter pdg Id = " << daughter->particleId() << std::endl;
+	    //std::cout << "daughter pdg Id = " << daughter->pdgId() << std::endl;
+		  //std::cout << "daughter pdg Id = " << daughter->particleId() << std::endl;
 
             if(part->charge()){
 

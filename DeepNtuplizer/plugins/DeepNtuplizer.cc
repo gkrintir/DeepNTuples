@@ -85,6 +85,7 @@ private:
     edm::EDGetTokenT<edm::View<pat::Jet> >      jetToken_;
     edm::EDGetTokenT<std::vector<PileupSummaryInfo>> puToken_;
     edm::EDGetTokenT<double> rhoToken_;
+    edm::EDGetTokenT<int> centralityBinCollectionName_;
 
     std::string t_qgtagger;
 
@@ -113,6 +114,7 @@ DeepNtuplizer::DeepNtuplizer(const edm::ParameterSet& iConfig):
                                     jetToken_(consumes<edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("jets"))),
                                     puToken_(consumes<std::vector<PileupSummaryInfo >>(iConfig.getParameter<edm::InputTag>("pupInfo"))),
                                     rhoToken_(consumes<double>(iConfig.getParameter<edm::InputTag>("rhoInfo"))),
+                                    centralityBinCollectionName_(consumes<int>(iConfig.getParameter<edm::InputTag>("centralityBinCollectionName"))),
                                     t_qgtagger(iConfig.getParameter<std::string>("qgtagger"))
 {
     /*
@@ -182,7 +184,7 @@ DeepNtuplizer::DeepNtuplizer(const edm::ParameterSet& iConfig):
     ntuple_pfCands * pfcands = new ntuple_pfCands();
     pfcands->setJetRadius(jetR);
 
-    addModule(pfcands, "pfcands");
+    //addModule(pfcands, "pfcands");
 
     addModule(new ntuple_bTagVars(), "bTagVars");
 
@@ -232,6 +234,11 @@ DeepNtuplizer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     edm::Handle<double> rhoInfo;
     iEvent.getByToken(rhoToken_,rhoInfo);
 
+    edm::Handle<int> cbin;
+    iEvent.getByToken(centralityBinCollectionName_,cbin);
+    if(*cbin>=30)return;
+    //std::cout << *cbin<<std::endl;
+    
     edm::Handle<edm::View<pat::Jet> > jets;
     iEvent.getByToken(jetToken_, jets);
 
@@ -243,14 +250,14 @@ DeepNtuplizer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         m->readSetup(iSetup);
         m->readEvent(iEvent);
     }
-
+    //std::cout<<"edo"<<std::endl;
     std::vector<size_t> indices(jets->size());
     for(size_t i=0;i<jets->size();i++)
         indices.at(i)=i;
 
     if(applySelection_)
         std::random_shuffle (indices.begin(),indices.end());
-
+    //std::cout<<"edo 1"<<std::endl;
     edm::View<pat::Jet>::const_iterator jetIter;
     // loop over the jets
     //for (edm::View<pat::Jet>::const_iterator jetIter = jets->begin(); jetIter != jets->end(); ++jetIter) {
@@ -262,18 +269,18 @@ DeepNtuplizer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
         if(jet.genJet())
             njetswithgenjet_++;
-
+	//std::cout<<"edo 2"<<std::endl;
         bool writejet=true;
 				size_t idx = 0;
         for(auto& m:modules_){
-					//std::cout << module_names_[idx] << std::endl;
+	  //std::cout << module_names_[idx] << std::endl;
             if(! m->fillBranches(jet, jetidx, jets.product())){
                 writejet=false;
                 if(applySelection_) break;
             }
 						idx++;
         }
-				//std::cout << "Jet done" << std::endl;
+	//std::cout << "Jet done" << std::endl;
         if( (writejet&&applySelection_) || !applySelection_ ){
             tree_->Fill();
             njetsselected_++;

@@ -1,14 +1,14 @@
 import FWCore.ParameterSet.Config as cms
 
 deepntuplizer = cms.EDAnalyzer('DeepNtuplizer',
-                                vertices   = cms.InputTag("offlineSlimmedPrimaryVertices"),
+                                vertices   = cms.InputTag("offlineSlimmedPrimaryVerticesRecovery"),
                                 secVertices = cms.InputTag("slimmedSecondaryVertices"),
                                 jets       = cms.InputTag("slimmedJets"),
                                 jetR       = cms.double(0.4),
 				                runFatJet = cms.bool(False),
                                 pupInfo = cms.InputTag("slimmedAddPileupInfo"),
                                 rhoInfo = cms.InputTag("fixedGridRhoFastjetAll"),	
-                                SVs  = cms.InputTag("slimmedSecondaryVertices"),
+                                SVs  = cms.InputTag("slimmedSecondaryVertices","","PATf"),
                                 LooseSVs = cms.InputTag("inclusiveCandidateSecondaryVertices"),
                                 genJetMatchWithNu = cms.InputTag("patGenJetMatchWithNu"),
                                 genJetMatchRecluster = cms.InputTag("patGenJetMatchRecluster"),

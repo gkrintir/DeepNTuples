@@ -33,16 +33,16 @@ void ntuple_JetInfo::getInput(const edm::ParameterSet& iConfig){
 void ntuple_JetInfo::initBranches(TTree* tree){
 
     //more general event info, here applied per jet
-    addBranch(tree,"npv"    ,&npv_    ,"npv/f"    );
-    addBranch(tree,"rho", &rho_, "rho/f");
-    addBranch(tree,"ntrueInt",&ntrueInt_,"ntrueInt/f");
+    addBranch(tree,"npv"    ,&npv_    ,"npv/F"    );
+    addBranch(tree,"rho", &rho_, "rho/F");
+    addBranch(tree,"ntrueInt",&ntrueInt_,"ntrueInt/F");
     addBranch(tree,"event_no"    ,&event_no_    ,"event_no/i"    );
     addBranch(tree,"jet_no"    ,&jet_no_    ,"jet_no/i"    );
 
 
     // truth labels
-    addBranch(tree,"gen_pt"    ,&gen_pt_    ,"gen_pt_/f"    );
-    addBranch(tree,"Delta_gen_pt"    ,&Delta_gen_pt_,"Delta_gen_pt_/f"    );
+    addBranch(tree,"gen_pt"    ,&gen_pt_    ,"gen_pt_/F"    );
+    addBranch(tree,"Delta_gen_pt"    ,&Delta_gen_pt_,"Delta_gen_pt_/F"    );
     addBranch(tree,"isB",&isB_, "isB_/i");
     addBranch(tree,"isGBB",&isGBB_, "isGBB_/i");
     addBranch(tree,"isBB",&isBB_, "isBB_/i");
@@ -56,7 +56,7 @@ void ntuple_JetInfo::initBranches(TTree* tree){
     addBranch(tree,"isS",&isS_, "isS_/i");
     addBranch(tree,"isG",&isG_, "isG_/i");
     addBranch(tree,"isUndefined",&isUndefined_, "isUndefined_/i");
-    addBranch(tree,"genDecay",&genDecay_, "genDecay_/f"); //dxy corresponds to the distance the Bhadron traveled
+    addBranch(tree,"genDecay",&genDecay_, "genDecay_/F"); //dxy corresponds to the distance the Bhadron traveled
 
     //truth labeling with fallback to physics definition for light/gluon/undefined of standard flavor definition
     addBranch(tree,"isPhysB",&isPhysB_, "isPhysB_/i");
@@ -93,13 +93,13 @@ void ntuple_JetInfo::initBranches(TTree* tree){
     addBranch(tree,"QG_mult",  &QG_mult_);  // multiplicity i.e. total num of PFcands reconstructed
 
     // yutas quark-gluon info
-    addBranch(tree,"y_multiplicity"    ,&y_multiplicity_,"y_multiplicity_/f"    );
-    addBranch(tree,"y_charged_multiplicity"    ,&y_charged_multiplicity_,"y_charged_multiplicity_/f"    );
-    addBranch(tree,"y_neutral_multiplicity"    ,&y_neutral_multiplicity_,"y_neutral_multiplicity_/f"    );
-    addBranch(tree,"y_ptD"    ,&y_ptD_,"y_ptD_/f"    );
-    addBranch(tree,"y_axis1"    ,&y_axis1_,"y_axis1_/f"    );
-    addBranch(tree,"y_axis2"    ,&y_axis2_,"y_axis2_/f"    );
-    addBranch(tree,"y_pt_dr_log"    ,&y_pt_dr_log_,"y_pt_dr_log_/f"    );
+    addBranch(tree,"y_multiplicity"    ,&y_multiplicity_,"y_multiplicity_/F"    );
+    addBranch(tree,"y_charged_multiplicity"    ,&y_charged_multiplicity_,"y_charged_multiplicity_/F"    );
+    addBranch(tree,"y_neutral_multiplicity"    ,&y_neutral_multiplicity_,"y_neutral_multiplicity_/F"    );
+    addBranch(tree,"y_ptD"    ,&y_ptD_,"y_ptD_/F"    );
+    addBranch(tree,"y_axis1"    ,&y_axis1_,"y_axis1_/F"    );
+    addBranch(tree,"y_axis2"    ,&y_axis2_,"y_axis2_/F"    );
+    addBranch(tree,"y_pt_dr_log"    ,&y_pt_dr_log_,"y_pt_dr_log_/F"    );
 
 
     // in the jet
@@ -111,20 +111,20 @@ void ntuple_JetInfo::initBranches(TTree* tree){
     addBranch(tree,"muons_isTightMuon", &muons_isTightMuon_, "muons_isTightMuon_[muons_number_]/i");
     addBranch(tree,"muons_isSoftMuon", &muons_isSoftMuon_, "muons_isSoftMuon_[muons_number_]/i");
     addBranch(tree,"muons_isHighPtMuon", &muons_isHighPtMuon_, "muons_isHighPtMuon_[muons_number_]/i");
-    addBranch(tree,"muons_pt", &muons_pt_, "muons_pt_[muons_number_]/f");
-    addBranch(tree,"muons_relEta", &muons_relEta_, "muons_relEta_[muons_number_]/f");
-    addBranch(tree,"muons_relPhi", &muons_relPhi_, "muons_relPhi_[muons_number_]/f");
-    addBranch(tree,"muons_energy", &muons_energy_, "muons_energy_[muons_number_]/f");
-    addBranch(tree,"electrons_pt", &electrons_pt_, "electrons_pt_[electrons_number_]/f");
-    addBranch(tree,"electrons_relEta", &electrons_relEta_, "electrons_relEta_[electrons_number_]/f");
-    addBranch(tree,"electrons_relPhi", &electrons_relPhi_, "electrons_relPhi_[electrons_number_]/f");
-    addBranch(tree,"electrons_energy", &electrons_energy_, "electrons_energy_[electrons_number_]/f");
+    addBranch(tree,"muons_pt", &muons_pt_, "muons_pt_[muons_number_]/F");
+    addBranch(tree,"muons_relEta", &muons_relEta_, "muons_relEta_[muons_number_]/F");
+    addBranch(tree,"muons_relPhi", &muons_relPhi_, "muons_relPhi_[muons_number_]/F");
+    addBranch(tree,"muons_energy", &muons_energy_, "muons_energy_[muons_number_]/F");
+    addBranch(tree,"electrons_pt", &electrons_pt_, "electrons_pt_[electrons_number_]/F");
+    addBranch(tree,"electrons_relEta", &electrons_relEta_, "electrons_relEta_[electrons_number_]/F");
+    addBranch(tree,"electrons_relPhi", &electrons_relPhi_, "electrons_relPhi_[electrons_number_]/F");
+    addBranch(tree,"electrons_energy", &electrons_energy_, "electrons_energy_[electrons_number_]/F");
 
 
-    addBranch(tree,"gen_pt_Recluster"    ,&gen_pt_Recluster_    ,"gen_pt_Recluster_/f"    );
-    addBranch(tree,"gen_pt_WithNu"    ,&gen_pt_WithNu_    ,"gen_pt_WithNu_/f"    );
-    addBranch(tree,"Delta_gen_pt_Recluster"    ,&Delta_gen_pt_Recluster_    ,"Delta_gen_pt_Recluster_/f"    );
-    addBranch(tree,"Delta_gen_pt_WithNu"    ,&Delta_gen_pt_WithNu_    ,"Delta_gen_pt_WithNu_/f"    );
+    addBranch(tree,"gen_pt_Recluster"    ,&gen_pt_Recluster_    ,"gen_pt_Recluster_/F"    );
+    addBranch(tree,"gen_pt_WithNu"    ,&gen_pt_WithNu_    ,"gen_pt_WithNu_/F"    );
+    addBranch(tree,"Delta_gen_pt_Recluster"    ,&Delta_gen_pt_Recluster_    ,"Delta_gen_pt_Recluster_/F"    );
+    addBranch(tree,"Delta_gen_pt_WithNu"    ,&Delta_gen_pt_WithNu_    ,"Delta_gen_pt_WithNu_/F"    );
 
     if(1) // discriminators might need to be filled differently. FIXME
         for(auto& entry : discriminators_) {
@@ -136,6 +136,7 @@ void ntuple_JetInfo::initBranches(TTree* tree){
 
 
 void ntuple_JetInfo::readEvent(const edm::Event& iEvent){
+
 
     iEvent.getByToken(qglToken_, qglHandle);
     iEvent.getByToken(ptDToken_, ptDHandle);
@@ -167,21 +168,25 @@ void ntuple_JetInfo::readEvent(const edm::Event& iEvent){
     //std::cout << " start search for a b in this event "<<std::endl;
  for (const reco::Candidate &genC : *genParticlesHandle)
    {
+     //std::cout<<"edo b"<<std::endl;
      const reco::GenParticle &gen = static_cast< const reco::GenParticle &>(genC);
-     
+     //std::cout<<"edo b2"<< ((abs(gen.pdgId())>500&&abs(gen.pdgId())<600)||(abs(gen.pdgId())>5000&&abs(gen.pdgId())<6000)) <<std::endl;
      if((abs(gen.pdgId())>500&&abs(gen.pdgId())<600)||(abs(gen.pdgId())>5000&&abs(gen.pdgId())<6000)) {
 
        //std::cout<<gen.end_vertex()<<endl;
 
        Bhadron_.push_back(gen);
+       //std::cout<<"bef"<<std::endl;
        if(gen.numberOfDaughters()>0){
-     
+	 //std::cout<<"af"<<std::endl;
 	 if( (abs(gen.daughter(0)->pdgId())>500&&abs(gen.daughter(0)->pdgId())<600)||(abs(gen.daughter(0)->pdgId())>5000&&abs(gen.daughter(0)->pdgId())<6000))
 	   {
+	     //  std::cout<<"af"<<std::endl;
 	     if(gen.daughter(0)->numberOfDaughters()>0)
 	       {
-		
+
 		 const reco::GenParticle &daughter_ = static_cast< const reco::GenParticle &>(*(gen.daughter(0)->daughter(0)));
+
 		 
 		 if(daughter_.vx()!=gen.vx())
 		   { 
@@ -213,11 +218,13 @@ void ntuple_JetInfo::readEvent(const edm::Event& iEvent){
  for (const reco::Candidate &genC : *genParticlesHandle) {
         const reco::GenParticle &gen = static_cast< const reco::GenParticle &>(genC);
         if(abs(gen.pdgId())==12||abs(gen.pdgId())==14||abs(gen.pdgId())==16) {
-            const reco::GenParticle* mother =  static_cast< const reco::GenParticle*> (gen.mother());
+	             const reco::GenParticle* mother =  static_cast< const reco::GenParticle*> (gen.mother());
             if(mother!=NULL) {
+	      //std::cout<<"nous"<<std::endl;
                 if((abs(mother->pdgId())>500&&abs(mother->pdgId())<600)||(abs(mother->pdgId())>5000&&abs(mother->pdgId())<6000)) {
                     neutrinosLepB.emplace_back(gen);
                 }
+		//std::cout<<"nous ply"<<std::endl;
                 if((abs(mother->pdgId())>400&&abs(mother->pdgId())<500)||(abs(mother->pdgId())>4000&&abs(mother->pdgId())<5000)) {
                     neutrinosLepB_C.emplace_back(gen);
                 }
@@ -226,7 +233,7 @@ void ntuple_JetInfo::readEvent(const edm::Event& iEvent){
                 std::cout << "No mother" << std::endl;
             }
         }
-
+	//std::cout<<"nouss"<<std::endl;
         int id(std::abs(gen.pdgId())); 
         int status(gen.status());
 
@@ -245,7 +252,7 @@ void ntuple_JetInfo::readEvent(const edm::Event& iEvent){
             alltaus_.push_back(gen);
         }
 
-    }
+	}
     //technically a branch fill but per event, therefore here
 }
 
@@ -287,6 +294,7 @@ bool ntuple_JetInfo::fillBranches(const pat::Jet & jet, const size_t& jetidx, co
 
 
     jet_no_=jetidx;
+    //std::cout<<npv_ <<std::endl;
 
     const auto jetRef = reco::CandidatePtr(coll->ptrs().at( jetidx));
 
@@ -295,7 +303,7 @@ bool ntuple_JetInfo::fillBranches(const pat::Jet & jet, const size_t& jetidx, co
     QG_axis2_ = (*axis2Handle)[jetRef];
     QG_mult_ = (*multHandle)[jetRef];
 
-
+    //std::cout<<npv_ <<std::endl;
     //std::vector<Ptr<pat::Jet> > p= coll->ptrs();
 
     isB_=0; isGBB_=0; isBB_=0; isC_=0; isGCC_=0; isCC_=0; isUD_=0;isTau_=0;
@@ -347,7 +355,7 @@ bool ntuple_JetInfo::fillBranches(const pat::Jet & jet, const size_t& jetidx, co
         case deep_ntuples::JetFlavor::S:  isS_=1; break;
         default : isUndefined_=1; break;
         }
-    }
+	}
 
     //truth labeling with fallback to physics definition for light/gluon/undefined of standard flavor definition
     //// Note that jets with gluon->bb (cc) and x->bb (cc) are in the same categories
@@ -370,9 +378,10 @@ bool ntuple_JetInfo::fillBranches(const pat::Jet & jet, const size_t& jetidx, co
         case deep_ntuples::JetFlavor::LeptonicB_C: isPhysLeptonicB_C_=1; break;
         default : isPhysUndefined_=1; break;
         }
-    }
+    } //
 
-    if(!jet.genJet()){//for data
+
+    if(!jet.genJet()){//For data
         isUndefined_=1;isPhysUndefined_=1;
     }
 
@@ -388,6 +397,7 @@ bool ntuple_JetInfo::fillBranches(const pat::Jet & jet, const size_t& jetidx, co
     jet_energy_ = jet.energy();
 
     genDecay_ = -1.;
+    //std::cout<<npv_ <<std::endl;
 
     try {
         reco::GenParticleRefVector Bhadrons_in_jet = jet.jetFlavourInfo().getbHadrons();
@@ -429,13 +439,13 @@ bool ntuple_JetInfo::fillBranches(const pat::Jet & jet, const size_t& jetidx, co
     }
 
 
-
     //https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2016
+
     try{
         float NHF  = jet.neutralHadronEnergyFraction();
         float NEMF = jet.neutralEmEnergyFraction();
         float CHF  = jet.chargedHadronEnergyFraction();
-        //float MUF  = jet.muonEnergyFraction();
+        //Float MUF  = jet.muonEnergyFraction();
         float CEMF = jet.chargedEmEnergyFraction();
         float NumConst = jet.chargedMultiplicity()+jet.neutralMultiplicity();
         float NumNeutralParticles =jet.neutralMultiplicity();
@@ -455,7 +465,7 @@ bool ntuple_JetInfo::fillBranches(const pat::Jet & jet, const size_t& jetidx, co
     gen_pt_WithNu_=0;
     Delta_gen_pt_Recluster_=0;
     Delta_gen_pt_WithNu_=0;
-
+    //std::cout<<npv_ <<std::endl;
     if(jet.genJet()){
         gen_pt_ =  jet.genJet()->pt();
         Delta_gen_pt_ =  jet.genJet()->pt()- jet_pt_;
@@ -475,10 +485,11 @@ bool ntuple_JetInfo::fillBranches(const pat::Jet & jet, const size_t& jetidx, co
         }
 
         Delta_gen_pt_Recluster_=gen_pt_Recluster_-jet.pt();
-        Delta_gen_pt_WithNu_=gen_pt_WithNu_-jet.pt();
-    }
+      Delta_gen_pt_WithNu_=gen_pt_WithNu_-jet.pt();
+      }
 
-
+    //std::cout<<npv_ <<std::endl;
+    /*
     auto qgtuple=yuta::calcVariables(&jet);
     //(multiplicity, charged_multiplicity, neutral_multiplicity, ptD, axis1, axis2, pt_dr_log);
 
@@ -489,8 +500,8 @@ bool ntuple_JetInfo::fillBranches(const pat::Jet & jet, const size_t& jetidx, co
     y_axis1_  =  std::get<4>(qgtuple);
     y_axis2_  =  std::get<5>(qgtuple);
     y_pt_dr_log_=std::get<6>(qgtuple);
-
-   
+    */
+    //std::cout<<npv_ <<std::endl;
 
 
 
