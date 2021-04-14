@@ -8,7 +8,7 @@ options = VarParsing.VarParsing()
 
 options.register('inputScript','',VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"input Script")
 options.register('outputFile','output',VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"output File (w/o .root)")
-options.register('maxEvents',-1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"maximum events")
+options.register('maxEvents',100,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"maximum events")
 options.register('skipEvents', 0, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "skip N events")
 options.register('job', 0, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "job number")
 options.register('nJobs', 1, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "total jobs")
@@ -28,25 +28,16 @@ process = cms.Process("DNNFiller")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load("Configuration.EventContent.EventContent_cff")
 process.load('Configuration.StandardSequences.Services_cff')
-
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
+process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-#from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL', '')
-#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2021_realistic_hi','')# ', '')
+#process.GlobalTag = GlobalTag(process.GlobalTag, 'run3_mc_FULL', '')
 
-#Set GT by hand:                                                                                                                                            
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_mc_FULL','')#
-'''
-process.load("Configuration.Geometry.GeometryRecoDB_cff")
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc')
-process.load("Configuration.StandardSequences.MagneticField_cff")
-'''
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
@@ -73,12 +64,9 @@ process.source.fileNames = process.source.fileNames[jobNumber:numberOfFiles:numb
 if options.nJobs > 1:
     print ("running over these files:")
     print (process.source.fileNames)
-process.source.fileNames = ['file:/afs/cern.ch/work/m/mnguyen/public/deepCSV_hiMiniAOD_testFiles/bjet_hiMiniAOD_100evts.root']
-process.source.fileNames = ['/store/mc/RunIISummer19UL18MiniAOD/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v11_L1v1-v2/260000/00C28834-56C0-2343-B436-AA8521756E9E.root']
-process.source.fileNames = ['file:/eos/cms/store/relval/CMSSW_10_6_14/RelValZprimeToTT_M2000_W600_13UP17/MINIAODSIM/PU25ns_106X_mc2017_realistic_v7_HS-v1/20000/7505AF8E-18E8-F343-8FDC-478FC0ADC8F9.root']
-process.source.fileNames = ['file:/afs/cern.ch/work/g/gkrintir/private/DeepNTuple/CMSSW_11_2_0_pre8/src/test_deep_flavour_MINIAODSIM.root']
-process.source.fileNames = ['/store/mc/RunIISummer19UL18MiniAOD/BcToJPsiMuNu_TuneCP5_13TeV-bcvegpy2-pythia8-evtgen/MINIAODSIM/106X_upgrade2018_realistic_v11_L1v1_ext1-v2/100000/15B49BB1-67C7-6D4E-BB05-BD1D27C94BD1.root']
-process.source.fileNames = ['file:/afs/cern.ch/work/g/gkrintir/private/DeepNTuple/CMSSW_11_2_0_pre8/src/test_deep_flavour_MINIAODSIM.root']
+#process.source.fileNames = ['file:/afs/cern.ch/work/g/gkrintir/private/DeepNTuple/CMSSW_11_2_0_pre8/src/test_deep_flavour_MINIAODSIM.root']
+process.source.fileNames = ['file:test_deep_flavour_MINIAODSIM.root']
+#process.source.fileNames = ['file:/eos/cms/store/group/phys_top/gkrintir/TT_TuneCP5_HydjetDrumMB_5p02TeV-powheg-pythia8/TT_TuneCP5_HydjetDrumMB_5p02TeV-powheg-pythia8-updatedPatJets-v2/210212_231711/0000/test_deep_flavour_MINIAODSIM_1.root']
 
 process.source.skipEvents = cms.untracked.uint32(options.skipEvents)
 process.maxEvents  = cms.untracked.PSet( 
@@ -89,7 +77,8 @@ process.maxEvents  = cms.untracked.PSet(
 if int(options.release.replace("_",""))>=840 :
  bTagInfos = [
         'pfImpactParameterTagInfos',
-        'pfInclusiveSecondaryVertexFinderTagInfos',
+         'pfInclusiveSecondaryVertexFinderTagInfos',
+         'pfSecondaryVertexTagInfos',
         'pfDeepCSVTagInfos',
  ]
 else :
@@ -102,23 +91,38 @@ else :
 
 if int(options.release.replace("_",""))>=840 :
  bTagDiscriminators = [
-     #'softPFMuonBJetTags',
-     #'softPFElectronBJetTags',
-     'pfJetBProbabilityBJetTags',
-     'pfJetProbabilityBJetTags',
-     'pfCombinedInclusiveSecondaryVertexV2BJetTags',
+     'softPFMuonBJetTags',
+     'softPFElectronBJetTags',
+         'pfJetBProbabilityBJetTags',
+         'pfJetProbabilityBJetTags',
+          'pfCombinedInclusiveSecondaryVertexV2BJetTags',
+          'pfCombinedSecondaryVertexV2BJetTags',
          'pfDeepCSVJetTags:probudsg', #to be fixed with new names
          'pfDeepCSVJetTags:probb',
          'pfDeepCSVJetTags:probc',
          'pfDeepCSVJetTags:probbb',
          'pfDeepCSVJetTags:probcc',
+      # DeepFlavour                                                                                                                                                                                   
+     'pfDeepFlavourJetTags:probb'
+  , 'pfDeepFlavourJetTags:probbb'
+  , 'pfDeepFlavourJetTags:problepb'
+  , 'pfDeepFlavourJetTags:probc'
+  , 'pfDeepFlavourJetTags:probuds'
+  , 'pfDeepFlavourJetTags:probg'
+  , 'pfNegativeDeepFlavourJetTags:probb'
+  , 'pfNegativeDeepFlavourJetTags:probbb'
+  , 'pfNegativeDeepFlavourJetTags:problepb'
+  , 'pfNegativeDeepFlavourJetTags:probc'
+  , 'pfNegativeDeepFlavourJetTags:probuds'
+  , 'pfNegativeDeepFlavourJetTags:probg'
+
  ]
 else :
   bTagDiscriminators = [
      'softPFMuonBJetTags',
      'softPFElectronBJetTags',
-     'pfJetBProbabilityBJetTags',
-     'pfJetProbabilityBJetTags',
+         'pfJetBProbabilityBJetTags',
+         'pfJetProbabilityBJetTags',
      'pfCombinedInclusiveSecondaryVertexV2BJetTags',
          'deepFlavourJetTags:probudsg', #to be fixed with new names
          'deepFlavourJetTags:probb',
@@ -128,10 +132,9 @@ else :
  ]
 
 
-
+'''
 jetCorrectionsAK4 = ('AK4PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute'], 'None')
 
-'''
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 updateJetCollection(
         process,
@@ -149,7 +152,6 @@ updateJetCollection(
 )
 
 if hasattr(process,'updatedPatJetsTransientCorrectedDeepFlavour'):
-        print 'exei!!'
 	process.updatedPatJetsTransientCorrectedDeepFlavour.addTagInfos = cms.bool(True) 
 	process.updatedPatJetsTransientCorrectedDeepFlavour.addBTagInfo = cms.bool(True)
 else:
@@ -160,7 +162,7 @@ else:
 process.load("DeepNTuples.DeepNtuplizer.QGLikelihood_cfi")
 process.es_prefer_jec = cms.ESPrefer("PoolDBESSource", "QGPoolDBESSource")
 process.load('RecoJets.JetProducers.QGTagger_cfi')
-process.QGTagger.srcJets   = cms.InputTag("slimmedJets")
+process.QGTagger.srcJets   = cms.InputTag("selectedUpdatedPatJetsDeepFlavour")
 process.QGTagger.jetsLabel = cms.string('QGL_AK4PFchs')
 
 
@@ -174,7 +176,7 @@ process.ak4GenJetsRecluster = ak4GenJets.clone(src = 'packedGenParticlesForJetsN
  
  
 process.patGenJetMatchWithNu = cms.EDProducer("GenJetMatcher",  # cut on deltaR; pick best by deltaR           
-    src         = cms.InputTag("slimmedJets"),      # RECO jets (any View<Jet> is ok) 
+    src         = cms.InputTag("selectedUpdatedPatJetsDeepFlavour"),      # RECO jets (any View<Jet> is ok) 
     matched     = cms.InputTag("ak4GenJetsWithNu"),        # GEN jets  (must be GenJetCollection)              
     mcPdgId     = cms.vint32(),                      # n/a   
     mcStatus    = cms.vint32(),                      # n/a   
@@ -186,7 +188,7 @@ process.patGenJetMatchWithNu = cms.EDProducer("GenJetMatcher",  # cut on deltaR;
 )
 
 process.patGenJetMatchRecluster = cms.EDProducer("GenJetMatcher",  # cut on deltaR; pick best by deltaR           
-    src         = cms.InputTag("slimmedJets"),      # RECO jets (any View<Jet> is ok) 
+    src         = cms.InputTag("selectedUpdatedPatJetsDeepFlavour"),      # RECO jets (any View<Jet> is ok) 
     matched     = cms.InputTag("ak4GenJetsRecluster"),        # GEN jets  (must be GenJetCollection)              
     mcPdgId     = cms.vint32(),                      # n/a   
     mcStatus    = cms.vint32(),                      # n/a   
@@ -200,25 +202,36 @@ process.patGenJetMatchRecluster = cms.EDProducer("GenJetMatcher",  # cut on delt
 process.genJetSequence = cms.Sequence(process.packedGenParticlesForJetsNoNu*process.ak4GenJetsWithNu*process.ak4GenJetsRecluster*process.patGenJetMatchWithNu*process.patGenJetMatchRecluster)
  
 
-outFileName = options.outputFile + '_' + str(options.job) +  '.root'
+outFileName = options.outputFile+  '.root' #+ '_' + str(options.job) +  '.root'
 print ('Using output file ' + outFileName)
 
 process.TFileService = cms.Service("TFileService", 
                                    fileName = cms.string(outFileName))
 
+#process.load("DeepNTuples.DeepNtuplizer.candidateBtaggingMiniAOD_cff") 
 # DeepNtuplizer
 process.load("DeepNTuples.DeepNtuplizer.DeepNtuplizer_cfi")
-
-process.deepntuplizer.jets = cms.InputTag('slimmedJets');
+process.deepntuplizer.centralityBinCollectionName    = cms.InputTag("centralityBin","HFtowers")
+print('\n\033[31m~*~ USING CENTRALITY TABLE FOR PbPb 2018 DATA ~*~\033[0m\n')
+process.GlobalTag.snapshotTime = cms.string("9999-12-31 23:59:59.000")
+process.GlobalTag.toGet.extend([
+    cms.PSet(record = cms.string("HeavyIonRcd"),
+             tag = cms.string("CentralityTable_HFtowers200_DataPbPb_periHYDJETshape_run2v1033p1x01_offline"),
+             connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
+             label = cms.untracked.string("HFtowers")
+        ),
+])
+#process.load("RecoHI.HiCentralityAlgos.CentralityBin_cfi")
+#process.centralityBin.Centrality = cms.InputTag("centralityBin")
+#process.centralityBin.centralityVariable = cms.string("HFtowers")
+    
+process.deepntuplizer.jets = cms.InputTag('selectedUpdatedPatJetsDeepFlavour');
 process.deepntuplizer.bDiscriminators = bTagDiscriminators 
 
 if int(options.release.replace("_",""))>=840 :
    process.deepntuplizer.tagInfoName = cms.string('pfDeepCSV')
 
-process.p = cms.Path(
-    process.QGTagger + 
-    process.genJetSequence*  
-    process.deepntuplizer
-)
-
-
+process.p = cms.Path(process.QGTagger + process.genJetSequence* 
+                     #process.candidateBtagging*
+                     #process.centralityBin*
+                     process.deepntuplizer)
